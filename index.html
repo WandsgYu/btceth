@@ -1,251 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crypto Price Tracker</title>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魏猪猪的总资产估值</title>
     <style>
-      /* 全局样式 */
-      body {
-        font-family: "Arial", sans-serif;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-        background-color: #f9f9f9;
-        color: #333;
-      }
-
-      /* 标题样式 */
-      h1 {
-        margin-top: 20px;
-        font-size: 2.5em;
-        color: #0056b3;
-      }
-
-      /* 分隔线 */
-      hr {
-        border: 0;
-        height: 1px;
-        background: #ddd;
-        margin: 20px 0;
-      }
-
-      /* 加载价格和收益的文字样式 */
-      .price,
-      .profit {
-        font-size: 1.8em;
-        font-weight: bold;
-        margin: 10px 0;
-      }
-
-      /* 收益正负颜色 */
-      .profit {
-        color: #333; /* 默认颜色 */
-      }
-      .profit.positive {
-        color: #28a745; /* 绿色表示正收益 */
-      }
-      .profit.negative {
-        color: #dc3545; /* 红色表示负收益 */
-      }
-
-      /* 闪烁动画效果 */
-      .flash {
-        animation: flash 0.3s ease-in-out;
-      }
-
-      @keyframes flash {
-        0%,
-        100% {
-          background-color: transparent;
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #ffffff;
         }
-        50% {
-          background-color: yellow;
+        .balance {
+            font-size: 72px;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-      }
-
-      /* 脚注区域样式 */
-      footer {
-        margin-top: 20px;
-        font-size: 0.9em;
-        color: #666;
-      }
-      /* 合计收益突出显示 */
-      .total-profit {
-        font-size: 8em;
-        font-weight: bold;
-        color: #ff9800; /* 橙色，突出合计收益 */
-        margin-top: 20px;
-      }
-
-      .total-profit.positive {
-        color: #28a745; /* 正收益显示绿色 */
-      }
-
-      .total-profit.negative {
-        color: #dc3545; /* 负收益显示红色 */
-      }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .balance {
+            animation: pulse 3s infinite;
+        }
     </style>
-  </head>
-  <body>
-    <h1>Crypto Price Tracker</h1>
-    <div>
-      <p>
-        <strong>BTCUSDT:</strong>
-        <span id="btcPrice" class="price">Loading...</span>
-      </p>
-      <p>
-        <strong>BNBUSDT:</strong>
-        <span id="BNBPrice" class="price">Loading...</span>
-      </p>
-    </div>
-    <hr />
-    <div>
-      <p>
-        <strong>BTCUSDT 收益 (X):</strong>
-        <span id="btcProfit" class="profit">Calculating...</span>
-      </p>
-      <p>
-        <strong>BNBUSDT 收益 (Y):</strong>
-        <span id="BNBProfit" class="profit">Calculating...</span>
-      </p>
-      <p>
-        <strong>合计收益 (Z = X + Y):</strong>
-        <span id="totalProfit" class="total-profit">Calculating...</span>
-      </p>
-      <p>
-        <strong>历史最大合计收益:</strong>
-        <span id="maxProfit" class="total-profit">Calculating...</span>
-      </p>
-      <p>
-        <strong>历史最小合计收益:</strong>
-        <span id="minProfit" class="total-profit">Calculating...</span>
-      </p>
-    </div>
-
+</head>
+<body>
+    <div class="balance" id="balanceDisplay">Loading...</div>
     <script>
-      const btcApiUrl =
-        "https://data-api.binance.vision/api/v3/ticker/price?symbol=BTCUSDT";
-      const BNBApiUrl =
-        "https://data-api.binance.vision/api/v3/ticker/price?symbol=BNBUSDT";
+        const holdings = [
+            { symbol: "MKRUSDT", quantity: 0.0299 },
+            { symbol: "SNXUSDT", quantity: 11.4887 },
+            { symbol: "LDOUSDT", quantity: 29.9760 },
+            { symbol: "AAVEUSDT", quantity: 0.4796 },
+            { symbol: "UNIUSDT", quantity: 22.953 }
+        ];
 
-      const btcPosition = {
-        volume: 0.0,
-        entryPrice: 95327.2,
-        leverage: 1,
-        isLong: false,
-      };
-      const BNBPosition = {
-        volume: 16.26,
-        entryPrice: 680.2,
-        leverage: 1,
-        isLong: true,
-      };
+        const exchangeRate = 7.21; // USD to CNY
+        const updateInterval = 300; // ms
+        const apiUrlBase = "https://data-api.binance.vision/api/v3/ticker/price?symbol=";
 
-      let btcPreviousPrice = null;
-      let BNBPreviousPrice = null;
-      let maxProfit = null; // 记录历史最大值
-      let minProfit = null; // 记录历史最小值
-
-      const updatePrice = async (
-        apiUrl,
-        elementId,
-        previousPriceRef,
-        decimalPlaces
-      ) => {
-        try {
-          const response = await fetch(apiUrl);
-          const data = await response.json();
-          const currentPrice = parseFloat(data.price);
-
-          const priceElement = document.getElementById(elementId);
-          if (
-            previousPriceRef.value !== null &&
-            currentPrice !== previousPriceRef.value
-          ) {
-            priceElement.classList.add("flash");
-            setTimeout(() => priceElement.classList.remove("flash"), 300);
-          }
-
-          priceElement.textContent = currentPrice.toFixed(decimalPlaces);
-          previousPriceRef.value = currentPrice;
-          return currentPrice;
-        } catch (error) {
-          console.error(`Error fetching price for ${elementId}:`, error);
-          return null;
-        }
-      };
-
-      const calculateProfit = (currentPrice, position) => {
-        const { volume, entryPrice, leverage, isLong } = position;
-        const priceDifference = isLong
-          ? currentPrice - entryPrice
-          : entryPrice - currentPrice;
-        const profit = (priceDifference * volume * leverage).toFixed(2);
-        return parseFloat(profit);
-      };
-
-      const fetchPricesAndCalculateProfit = async () => {
-        const btcPrice = await updatePrice(
-          btcApiUrl,
-          "btcPrice",
-          { value: btcPreviousPrice },
-          2
-        );
-        const BNBPrice = await updatePrice(
-          BNBApiUrl,
-          "BNBPrice",
-          { value: BNBPreviousPrice },
-          4
-        );
-
-        let btcProfit = 0,
-          BNBProfit = 0;
-
-        if (btcPrice !== null) {
-          btcProfit = calculateProfit(btcPrice, btcPosition);
-          document.getElementById("btcProfit").textContent = btcProfit;
+        async function fetchPrice(symbol) {
+            try {
+                const response = await fetch(apiUrlBase + symbol);
+                const data = await response.json();
+                return parseFloat(data.price);
+            } catch (error) {
+                console.error("Error fetching price:", error);
+                return null;
+            }
         }
 
-        if (BNBPrice !== null) {
-          BNBProfit = calculateProfit(BNBPrice, BNBPosition);
-          document.getElementById("BNBProfit").textContent = BNBProfit;
+        async function updateTotalBalance() {
+            let totalBalanceCny = 0;
+
+            for (const holding of holdings) {
+                const priceInUsd = await fetchPrice(holding.symbol);
+                if (priceInUsd !== null) {
+                    totalBalanceCny += priceInUsd * holding.quantity * exchangeRate-0.5;
+                }
+            }
+
+            document.getElementById("balanceDisplay").textContent = `¥${totalBalanceCny.toFixed(2)}`;
         }
 
-        if (btcPrice !== null && BNBPrice !== null) {
-          const totalProfit = 7.23 * (btcProfit + BNBProfit);
-          const totalProfitElement = document.getElementById("totalProfit");
-          totalProfitElement.textContent = totalProfit.toFixed(2);
+        // Update balance every 0.3 seconds
+        setInterval(updateTotalBalance, updateInterval);
 
-          // 设置合计收益颜色（正值为绿色，负值为红色）
-          totalProfitElement.classList.toggle("positive", totalProfit > 0);
-          totalProfitElement.classList.toggle("negative", totalProfit < 0);
-
-          // 实时更新网页标题为合计收益
-          document.title = `合计收益: ${totalProfit.toFixed(2)}`;
-
-          // 检查并更新历史最大值
-          if (maxProfit === null || totalProfit > maxProfit) {
-            maxProfit = totalProfit;
-            const maxProfitElement = document.getElementById("maxProfit");
-            maxProfitElement.textContent = maxProfit.toFixed(2);
-            maxProfitElement.classList.toggle("positive", maxProfit > 0);
-            maxProfitElement.classList.toggle("negative", maxProfit < 0);
-          }
-
-          // 检查并更新历史最小值
-          if (minProfit === null || totalProfit < minProfit) {
-            minProfit = totalProfit;
-            const minProfitElement = document.getElementById("minProfit");
-            minProfitElement.textContent = minProfit.toFixed(2);
-            minProfitElement.classList.toggle("positive", minProfit > 0);
-            minProfitElement.classList.toggle("negative", minProfit < 0);
-          }
-        }
-      };
-
-      setInterval(fetchPricesAndCalculateProfit, 200); // 每 0.2 秒更新一次
-      fetchPricesAndCalculateProfit(); // 初始化调用
+        // Initial load
+        updateTotalBalance();
     </script>
-  </body>
+</body>
 </html>
