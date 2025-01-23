@@ -144,12 +144,12 @@
             // Update total profit
             const totalProfitCny = totalProfitUsd * exchangeRate;
             document.getElementById("totalProfit").textContent =
-                `Total Profit (USD): $${totalProfitUsd.toFixed(2)}`;
+                `Total Profit (USD): $${totalProfitUsd.toFixed(0)}`;
             document.getElementById("totalProfitCny").textContent =
-                `Converted to CNY: ¥${totalProfitCny.toFixed(2)}`;
+                `Converted to CNY: ¥${totalProfitCny.toFixed(0)}`;
 
             // Update title with CNY value
-            document.title = `${totalProfitCny.toFixed(2)}`;
+            document.title = `${totalProfitCny.toFixed(0)}`;
         }
 
         // Update profits every 0.5 seconds
