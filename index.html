@@ -2,72 +2,81 @@
 <html lang="zh-CN">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>0</title> <!-- 初始值为 0 -->
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #1e1e2f;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
-            text-align: center;
-            background: #2c2c3f;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            width: 90%;
-            max-width: 500px;
-        }
-
-        .profit-card {
-            margin: 15px 0;
-            background: #39394d;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        .profit-card h2 {
-            margin: 0;
-            font-size: 20px;
-            color: #ffd700;
-        }
-
-        .profit-card p {
-            margin: 10px 0;
-            font-size: 18px;
-        }
-
-        .price {
-            font-size: 14px;
-            color: #87ceeb;
-            position: absolute;
-            top: 10px;
-            right: 15px;
-        }
-
-        .total-profit {
-            font-size: 28px;
-            font-weight: bold;
-            color: #32cd32;
-        }
-
-        .converted-profit {
-            font-size: 20px;
-            color: #87ceeb;
-        }
-    </style>
-</head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>0</title> <!-- 初始值为 0 -->
+       <style>
+           body {
+               font-family: 'Arial', sans-serif;
+               margin: 0;
+               padding: 0;
+               background: #1e1e2f;
+               color: #fff;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               height: 100vh;
+           }
+   
+           .container {
+               text-align: center;
+               background: #2c2c3f;
+               padding: 40px;
+               border-radius: 10px;
+               box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+               width: 90%;
+               max-width: 800px;
+               min-width: 500px;
+               height: 90%;
+               overflow-y: auto;
+               display: flex;
+               flex-direction: column;
+               justify-content: center;
+               align-items: center;
+           }
+   
+           .profit-card {
+               margin: 30px 0;
+               background: #39394d;
+               padding: 50px;
+               border-radius: 8px;
+               box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+               position: relative;
+               width: 100%;
+               max-width: 600px;
+           }
+   
+           .profit-card h2 {
+               margin: 0;
+               font-size: 60px; /* 增大字体 */
+               color: #ffd700;
+           }
+   
+           .profit-card p {
+               margin: 20px 0;
+               font-size: 48px; /* 增大字体 */
+           }
+   
+           .price {
+               font-size: 36px; /* 增大字体 */
+               color: #87ceeb;
+               position: absolute;
+               top: 20px;
+               right: 25px;
+           }
+   
+           .total-profit {
+               font-size: 80px; /* 增大字体 */
+               font-weight: bold;
+               color: #32cd32;
+           }
+   
+           .converted-profit {
+               font-size: 56px; /* 增大字体 */
+               color: #87ceeb;
+           }
+       </style>
+   </head>
 
 <body>
     <div class="container">
